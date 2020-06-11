@@ -15,43 +15,55 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   ScrollController _scrollcontroller = new ScrollController();
 
+  List<dynamic> _anncList = new List();
   List<dynamic> tag;
-  int _maxGet = 7;
+  int _maxGet = 10;
+
 
   goDetail() {
     print(tag[1]);
     Navigator.of(context).pushNamed('/anncDetail', arguments: tag);
   }
 
-  Future<List> _getAnnc() async {
+  Future<List> _getAnnc(bool stat) async {
     final response = await http.post(
         "http://192.168.43.79/ProjectTiga/getAnncData.php",
         body: {"maxGet": _maxGet.toString()});
+
+    if (stat == null || stat == true){
+      setState(() {
+        response.body;
+      });
+    }
+
     return json.decode(response.body);
   }
 
   _getMore() {
     setState(() {
-      _maxGet = _maxGet + 1;
-      _getAnnc();
+      _maxGet = _maxGet + 10;
+      _getAnnc(true);
+      print('get More $_maxGet');
     });
 
-    print('get More $_maxGet');
+
   }
 
   Future<void> _onRefresh() async {
     print('refresh');
-    // monitor network fetch
-    await Future.delayed(Duration(milliseconds: 1000));
+    _getAnnc(true);
+    await Future.delayed(Duration(milliseconds: 2000));
     // if failed,use refreshFailed()
   }
 
   @override
   void initState() {
+
     _scrollcontroller.addListener(() {
       if (_scrollcontroller.position.pixels ==
           _scrollcontroller.position.maxScrollExtent) {
         _getMore();
+        print(_scrollcontroller.position.pixels);
         //AnimatedList.of(context).insertItem(index)
       }
     });
@@ -95,7 +107,7 @@ class _HomePageState extends State<HomePage> {
               children: <Widget>[
                 Expanded(
                   child: FutureBuilder(
-                    future: _getAnnc(),
+                    future: _getAnnc(false),
                     builder: (context, snapshot) {
                       if (snapshot.hasError) print(snapshot.error);
                       return snapshot.hasData
@@ -127,7 +139,7 @@ class _HomePageState extends State<HomePage> {
                                         margin: EdgeInsets.symmetric(
                                             vertical: 11, horizontal: 30),
                                         padding: EdgeInsets.all(10),
-                                        height: 100,
+                                        height: 120,
                                         decoration: BoxDecoration(
                                           color: Colors.white,
                                           borderRadius:
