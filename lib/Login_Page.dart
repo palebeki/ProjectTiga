@@ -23,7 +23,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   bool _ErrorUser = false;
   bool _ErrorPass = false;
   bool _showPass = false;
-  bool _keepLog = false;
+  bool _keepLog;
   String nama = "";
   String msg = "";
   double _animateWidth = 200;
@@ -260,7 +260,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                             value: _keepLog,
                             onChanged: (bool newValue) async {
                               setState(() {
-
+                                _keepLog =! _keepLog;
                               });
                             },
                             controlAffinity: ListTileControlAffinity
