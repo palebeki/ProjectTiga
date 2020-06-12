@@ -1,3 +1,5 @@
+//import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -18,7 +20,8 @@ class _AnncDetailState extends State<AnncDetail> {
   bool _visible = false;
 
   Future<bool> goBack() {
-    Navigator.of(context).pushReplacementNamed('/home');
+    //Navigator.of(context).pushReplacementNamed('/home');
+    Navigator.of(context).pop();
   }
 
   @override
@@ -31,6 +34,7 @@ class _AnncDetailState extends State<AnncDetail> {
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
     final double _scrHeight = MediaQuery.of(context).size.height;
@@ -40,65 +44,71 @@ class _AnncDetailState extends State<AnncDetail> {
       onWillPop: goBack,
       child: Scaffold(
         body: SafeArea(
-          child: ListView(
-            physics: BouncingScrollPhysics(),
-            children: <Widget>[
-              Center(
-                child: Hero(
-                  tag: tag[3],
-                  child: Container(
-                    width: _scrWidth * 0.85,
-                    margin: EdgeInsets.symmetric(vertical: 20),
-                    padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(30),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.grey[400].withOpacity(.5),
-                            blurRadius: 15,
-                            spreadRadius: 10)
-                      ],
-                    ),
-                    child: AnimatedOpacity(
-                      duration: Duration(milliseconds: 500),
-                      opacity: _visible ? 1 : 0,
-                      child: Column(
-                        children: <Widget>[
-                          SelectableText(
-                            tag[0],
-                            style: GoogleFonts.montserrat(
-                                fontSize: 30, fontWeight: FontWeight.w800),
+          child: Center(
+            child: ListView(
+              physics: BouncingScrollPhysics(),
+              children: <Widget>[
+                Center(
+                  child: Hero(
+                    tag: tag[3],
+                    child: Material(
+                      type: MaterialType.transparency,
+                      child: Container(
+                        width: _scrWidth * 0.85,
+                        margin: EdgeInsets.symmetric(vertical: 20),
+                        padding:
+                            EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(30),
+                          boxShadow: [
+                            BoxShadow(
+                                color: Colors.grey[400].withOpacity(.5),
+                                blurRadius: 15,
+                                spreadRadius: 10)
+                          ],
+                        ),
+                        child: AnimatedOpacity(
+                          duration: Duration(milliseconds: 500),
+                          opacity: _visible ? 1 : 0,
+                          child: Column(
+                            children: <Widget>[
+                              SelectableText(
+                                tag[0],
+                                style: GoogleFonts.montserrat(
+                                    fontSize: 30, fontWeight: FontWeight.w800),
+                              ),
+                              SizedBox(height: 5),
+                              SelectableText(
+                                tag[1],
+                                style: GoogleFonts.montserrat(
+                                    fontSize: 15, fontWeight: FontWeight.w600),
+                                textAlign: TextAlign.center,
+                              ),
+                              SizedBox(height: 20),
+                              SelectableText(
+                                tag[2],
+                                style: GoogleFonts.lato(
+                                  fontSize: 13,
+                                ),
+                                textAlign: TextAlign.justify,
+                              ),
+                              SizedBox(height: 20),
+                              SelectableText(
+                                tag[3],
+                                style: GoogleFonts.lato(
+                                    fontSize: 13, color: Colors.grey),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
                           ),
-                          SizedBox(height: 5),
-                          SelectableText(
-                            tag[1],
-                            style: GoogleFonts.montserrat(
-                                fontSize: 15, fontWeight: FontWeight.w600),
-                            textAlign: TextAlign.center,
-                          ),
-                          SizedBox(height: 20),
-                          SelectableText(
-                            tag[2],
-                            style: GoogleFonts.lato(
-                              fontSize: 13,
-                            ),
-                            textAlign: TextAlign.justify,
-                          ),
-                          SizedBox(height: 20),
-                          SelectableText(
-                            tag[3],
-                            style: GoogleFonts.lato(
-                                fontSize: 13, color: Colors.grey),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
