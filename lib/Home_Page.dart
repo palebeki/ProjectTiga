@@ -86,10 +86,10 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
         centerTitle: true,
-        bottomOpacity: 10,
-        brightness: Brightness.light,
+        //bottomOpacity: 0,
+        //brightness: Brightness.dark,
         elevation: 0,
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.redAccent,
         title: Text(
           'Announcements',
           style: GoogleFonts.montserrat(
@@ -113,7 +113,7 @@ class _HomePageState extends State<HomePage> {
                       return snapshot.hasData
                           ? LiquidPullToRefresh(
                               height: 100,
-                              color: Colors.red,
+                              color: Colors.redAccent,
                               showChildOpacityTransition: false,
                               animSpeedFactor: 5,
                               springAnimationDurationInMilliseconds: 500,
