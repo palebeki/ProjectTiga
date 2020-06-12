@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:circular_reveal_animation/circular_reveal_animation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   Animation<double> animation;
   Animation<double> animation1;
 
+  List<dynamic> userDetail;
   bool _ErrorUser = false;
   bool _ErrorPass = false;
   bool _showPass = false;
@@ -53,7 +55,15 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
         controller1.forward();
       });
       Future.delayed(Duration(milliseconds: 5000), () {
-        Navigator.of(context).pushReplacementNamed('/home');
+        setState(() {
+          userDetail = [
+            _datauser[0]['npm'],
+            _datauser[0]['nama_panggilan'],
+            _datauser[0]['nama_lengkap']
+          ];
+        });
+        Navigator.of(context)
+            .pushReplacementNamed('/home', arguments: userDetail);
       });
     } else {
       _ErrorPass = true;
@@ -62,7 +72,6 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
       print('pass salah');
     }
   }
-
 
   @override
   void initState() {
@@ -94,7 +103,6 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-
     Color _color = Color(0xFFf2f2f2); // Colors.grey[200]
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -260,7 +268,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                             value: _keepLog,
                             onChanged: (bool newValue) async {
                               setState(() {
-                                _keepLog =! _keepLog;
+                                _keepLog = !_keepLog;
                               });
                             },
                             controlAffinity: ListTileControlAffinity

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,19 +9,36 @@ import 'package:http/http.dart' as http;
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 
 class HomePage extends StatefulWidget {
+  List<dynamic> userDetail;
+
+  HomePage({this.userDetail});
+
   @override
-  _HomePageState createState() => _HomePageState();
+  _HomePageState createState() => _HomePageState(userDetail: userDetail);
 }
 
 class _HomePageState extends State<HomePage> {
   ScrollController _scrollcontroller = new ScrollController();
 
+  List<dynamic> userDetail;
+
+  _HomePageState({this.userDetail});
 
   List<dynamic> tag;
   int _maxGet = 10;
   bool _visible = false;
 
+  String greeting() {
+    var hour = DateTime.now().hour;
+    if (hour < 10) {
+      return 'Good Morning';
+    }
+    if (hour < 18) {
+      return 'Good Afternoon';
+    }
 
+    return 'Good Evening';
+  }
 
   goDetail() {
     print(tag[1]);
@@ -108,10 +126,70 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-//      drawer: Drawer(
-//        elevation: 10,
-//        child: Text('Hello'),
-//      ),
+      drawer: Drawer(
+        elevation: 10,
+        child: Container(
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    greeting(),
+                    style: GoogleFonts.montserrat(
+                      fontSize: 48,
+                      fontWeight: FontWeight.w800,
+                      height: .85,
+                      color: Color(0xff393e46),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    userDetail[1],
+                    style: GoogleFonts.lato(
+                        fontSize: 35,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xff393e46)),
+                  ),
+                  //Text(userDetail[2]),
+                  Text(
+                    userDetail[0],
+                    style: GoogleFonts.lato(color: Colors.black54),
+                  ),
+                  Divider(
+                    color: Color(0xff32e0c4),
+                  ),
+                  SizedBox(height: 10),
+                  Center(
+                    child: FlatButton(
+                      onPressed: () {
+                        Navigator.of(context).pushReplacementNamed('/login');
+                      },
+                      child: Container(
+                        height: 50,
+                        width: 200,
+                        decoration: BoxDecoration(
+                          color: Color(0xff32e0c4),
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                        child: Center(
+                          child: Text(
+                            'LOGOUT',
+                            style: GoogleFonts.montserrat(color: Colors.white,fontWeight: FontWeight.w700,fontSize: 15, letterSpacing: 2),
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
       body: Stack(
         children: <Widget>[
           SafeArea(
@@ -181,7 +259,8 @@ class _HomePageState extends State<HomePage> {
                                                     snapshot.data[index]
                                                         ['Header'],
                                                     style: GoogleFonts.lato(
-                                                      fontWeight: FontWeight.w900,
+                                                      fontWeight:
+                                                          FontWeight.w900,
                                                       fontSize: 20,
                                                       color: Color(0xff393e46),
                                                     ),
@@ -190,7 +269,8 @@ class _HomePageState extends State<HomePage> {
                                                     snapshot.data[index]
                                                         ['subHeader'],
                                                     style: GoogleFonts.lato(
-                                                      fontWeight: FontWeight.w600,
+                                                      fontWeight:
+                                                          FontWeight.w600,
                                                       fontSize: 15,
                                                       color: Color(0xff393e46)
                                                           .withOpacity(0.7),
@@ -203,7 +283,8 @@ class _HomePageState extends State<HomePage> {
                                                     snapshot.data[index]
                                                         ['stampid'],
                                                     style: GoogleFonts.lato(
-                                                      fontWeight: FontWeight.w500,
+                                                      fontWeight:
+                                                          FontWeight.w500,
                                                       fontSize: 10,
                                                       color: Color(0xff393e46),
                                                     ),

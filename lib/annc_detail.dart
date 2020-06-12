@@ -69,7 +69,7 @@ class _AnncDetailState extends State<AnncDetail> {
                           ],
                         ),
                         child: AnimatedOpacity(
-                          duration: Duration(milliseconds: 500),
+                          duration: Duration(milliseconds: 1500),
                           opacity: _visible ? 1 : 0,
                           child: Column(
                             children: <Widget>[

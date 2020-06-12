@@ -11,10 +11,14 @@ class RouteGenerator {
 
     switch(settings.name){
       case '/home' :
-        return MaterialPageRoute(builder: (_) => HomePage());
+        return MaterialPageRoute(builder: (_) => HomePage(userDetail: args,));
       case '/login' :
         return MaterialPageRoute(builder: (_) => LoginPage());
       case '/anncDetail' :
+//        return PageRouteBuilder(
+//          transitionDuration: Duration(milliseconds: 500),
+//          pageBuilder: (_,__,___) => AnncDetail(tag: args)
+//        );
         return MaterialPageRoute(builder: (_) => AnncDetail(tag: args));
 
     }
