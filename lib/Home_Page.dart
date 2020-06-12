@@ -18,11 +18,12 @@ class _HomePageState extends State<HomePage> {
   List<dynamic> _anncList = new List();
   List<dynamic> tag;
   int _maxGet = 10;
-
+  bool _visible = false;
 
   goDetail() {
     print(tag[1]);
-    Navigator.of(context).pushNamed('/anncDetail', arguments: tag);
+    Navigator.of(context).pushReplacementNamed('/anncDetail', arguments: tag);
+    //Navigator.of(context).popAndPushNamed('/anncDetail', arguments: tag);
   }
 
   Future<List> _getAnnc(bool stat) async {
@@ -30,7 +31,7 @@ class _HomePageState extends State<HomePage> {
         "http://192.168.43.79/ProjectTiga/getAnncData.php",
         body: {"maxGet": _maxGet.toString()});
 
-    if (stat == null || stat == true){
+    if (stat == null || stat == true) {
       setState(() {
         response.body;
       });
@@ -45,8 +46,6 @@ class _HomePageState extends State<HomePage> {
       _getAnnc(true);
       print('get More $_maxGet');
     });
-
-
   }
 
   Future<void> _onRefresh() async {
@@ -58,7 +57,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-
+    print('homePage');
     _scrollcontroller.addListener(() {
       if (_scrollcontroller.position.pixels ==
           _scrollcontroller.position.maxScrollExtent) {
@@ -68,6 +67,11 @@ class _HomePageState extends State<HomePage> {
       }
     });
     super.initState();
+    Future.delayed(Duration(milliseconds: 500), () {
+      setState(() {
+        _visible = true;
+      });
+    });
   }
 
   @override
@@ -135,56 +139,63 @@ class _HomePageState extends State<HomePage> {
                                         });
                                         goDetail();
                                       },
-                                      child: Container(
-                                        margin: EdgeInsets.symmetric(
-                                            vertical: 11, horizontal: 30),
-                                        padding: EdgeInsets.all(10),
-                                        height: 120,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                          boxShadow: [
-                                            BoxShadow(
-                                                color: Colors.grey[400]
-                                                    .withOpacity(.5),
-                                                blurRadius: 5,
-                                                spreadRadius: 2)
-                                          ],
-                                        ),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Text(
-                                              snapshot.data[index]['Header'],
-                                              style: GoogleFonts.lato(
-                                                fontWeight: FontWeight.w900,
-                                                fontSize: 20,
-                                                color: Color(0xff393e46),
-                                              ),
+                                      child: Hero(
+                                        tag: snapshot.data[index]['stampid'],
+                                        child: Container(
+                                          margin: EdgeInsets.symmetric(
+                                              vertical: 11, horizontal: 30),
+                                          padding: EdgeInsets.all(10),
+                                          height: 120,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                  color: Colors.grey[400]
+                                                      .withOpacity(.5),
+                                                  blurRadius: 5,
+                                                  spreadRadius: 2)
+                                            ],
+                                          ),
+                                          child: AnimatedOpacity(
+                                            duration: Duration(milliseconds: 500),
+                                            opacity: _visible ? 1 : 0,
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: <Widget>[
+                                                Text(
+                                                  snapshot.data[index]['Header'],
+                                                  style: GoogleFonts.lato(
+                                                    fontWeight: FontWeight.w900,
+                                                    fontSize: 20,
+                                                    color: Color(0xff393e46),
+                                                  ),
+                                                ),
+                                                Text(
+                                                  snapshot.data[index]['subHeader'],
+                                                  style: GoogleFonts.lato(
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 15,
+                                                    color: Color(0xff393e46)
+                                                        .withOpacity(0.7),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Text(
+                                                  snapshot.data[index]['stampid'],
+                                                  style: GoogleFonts.lato(
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 10,
+                                                    color: Color(0xff393e46),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                            Text(
-                                              snapshot.data[index]['subHeader'],
-                                              style: GoogleFonts.lato(
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 15,
-                                                color: Color(0xff393e46)
-                                                    .withOpacity(0.7),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: 10,
-                                            ),
-                                            Text(
-                                              snapshot.data[index]['stampid'],
-                                              style: GoogleFonts.lato(
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: 10,
-                                                color: Color(0xff393e46),
-                                              ),
-                                            ),
-                                          ],
+                                          ),
                                         ),
                                       ),
                                     );
