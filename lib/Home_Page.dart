@@ -1,12 +1,14 @@
 import 'dart:convert';
 import 'dart:ui';
 
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
+import 'package:projecttiga/widgets/colorLib.dart';
 
 class HomePage extends StatefulWidget {
   List<dynamic> userDetail;
@@ -56,6 +58,7 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         response.body;
       });
+
     }
 
     return json.decode(response.body);
@@ -66,6 +69,20 @@ class _HomePageState extends State<HomePage> {
       _maxGet = _maxGet + 10;
       _getAnnc(true);
       print('get More $_maxGet');
+      Flushbar(
+        flushbarStyle: FlushbarStyle.FLOATING,
+        margin: EdgeInsets.all(8),
+        borderRadius: 8,
+        icon: Icon(
+          Icons.info_outline,
+          size: 28.0,
+          color: Colors.blue[300],
+        ),
+        animationDuration: Duration(milliseconds: 500),
+        barBlur: 1.0,
+        message:  "Loaded More Announcements",
+        duration:  Duration(seconds: 3),
+      )..show(context);
     });
   }
 
@@ -74,6 +91,20 @@ class _HomePageState extends State<HomePage> {
     _getAnnc(true);
     await Future.delayed(Duration(milliseconds: 2000));
     // if failed,use refreshFailed()
+    Flushbar(
+      flushbarStyle: FlushbarStyle.FLOATING,
+      margin: EdgeInsets.all(8),
+      borderRadius: 8,
+      icon: Icon(
+        Icons.refresh,
+        size: 28.0,
+        color: Colors.blue[300],
+      ),
+      animationDuration: Duration(milliseconds: 500),
+      barBlur: 1.0,
+      message:  "Announcements Refreshed",
+      duration:  Duration(seconds: 3),
+    )..show(context);
   }
 
   @override
@@ -101,7 +132,7 @@ class _HomePageState extends State<HomePage> {
       statusBarColor: Colors.transparent,
       statusBarBrightness: Brightness.dark,
       //statusBarIconBrightness: Brightness.dark,
-      systemNavigationBarIconBrightness: Brightness.dark,
+      systemNavigationBarIconBrightness: Brightness.light,
     ));
 
     final double _scrHeight = MediaQuery.of(context).size.height;
@@ -116,7 +147,7 @@ class _HomePageState extends State<HomePage> {
         //bottomOpacity: 0,
         //brightness: Brightness.dark,
         elevation: 0,
-        backgroundColor: Colors.redAccent,
+        backgroundColor: libBlue,
         title: Text(
           'Announcements',
           style: GoogleFonts.montserrat(
@@ -151,7 +182,7 @@ class _HomePageState extends State<HomePage> {
                     userDetail[1],
                     style: GoogleFonts.lato(
                         fontSize: 35,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w500,
                         color: Color(0xff393e46)),
                   ),
                   //Text(userDetail[2]),
@@ -159,10 +190,60 @@ class _HomePageState extends State<HomePage> {
                     userDetail[0],
                     style: GoogleFonts.lato(color: Colors.black54),
                   ),
+                  SizedBox(height: 20),
                   Divider(
-                    color: Color(0xff32e0c4),
+                    color: libBlue,
                   ),
-                  SizedBox(height: 10),
+                  SizedBox(height: 40),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Icon(Icons.announcement, size: 30,color:  Color(0xff393e46).withOpacity(.5),),
+                      SizedBox(width: 10,),
+                      Text('Announcements', style: GoogleFonts.lato(fontSize: 16,color: Color(0xff393e46).withOpacity(.5))),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Icon(Icons.event_available, size: 30,color:  Color(0xff393e46),),
+                      SizedBox(width: 10,),
+                      Text('Register', style: GoogleFonts.lato(fontSize: 16,color: Color(0xff393e46))),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Icon(Icons.camera, size: 30,color:  Color(0xff393e46),),
+                      SizedBox(width: 10,),
+                      Text('Scan', style: GoogleFonts.lato(fontSize: 16,color: Color(0xff393e46))),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Icon(Icons.info, size: 30,color:  Color(0xff393e46),),
+                      SizedBox(width: 10,),
+                      Text('About', style: GoogleFonts.lato(fontSize: 16,color: Color(0xff393e46))),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Icon(Icons.settings, size: 30,color:  Color(0xff393e46),),
+                      SizedBox(width: 10,),
+                      Text('Settings', style: GoogleFonts.lato(fontSize: 16,color: Color(0xff393e46))),
+                    ],
+                  ),
+                  Expanded(
+                    child: Container(
+                      color: Colors.transparent,
+                    ),
+                  ),
                   Center(
                     child: FlatButton(
                       onPressed: () {
@@ -172,7 +253,7 @@ class _HomePageState extends State<HomePage> {
                         height: 50,
                         width: 200,
                         decoration: BoxDecoration(
-                          color: Color(0xff32e0c4),
+                          color: libBlue,
                           borderRadius: BorderRadius.circular(50),
                         ),
                         child: Center(
@@ -183,7 +264,8 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
-                  )
+                  ),
+                  SizedBox(height: 20,)
                 ],
               ),
             ),
@@ -204,7 +286,7 @@ class _HomePageState extends State<HomePage> {
                       return snapshot.hasData
                           ? LiquidPullToRefresh(
                               height: 100,
-                              color: Colors.redAccent,
+                              color: libBlue,
                               showChildOpacityTransition: false,
                               animSpeedFactor: 5,
                               springAnimationDurationInMilliseconds: 500,

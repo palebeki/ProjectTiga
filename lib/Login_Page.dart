@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'package:projecttiga/widgets/colorLib.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -190,7 +191,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(50),
                                   borderSide: BorderSide(
-                                      color: Color(0xff32e0c4), width: 2),
+                                      color: libBlue, width: 2),
                                 ),
                               ),
                             ),
@@ -225,7 +226,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                                     focusedBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(50),
                                         borderSide: BorderSide(
-                                            color: Color(0xff32e0c4),
+                                            color: libBlue,
                                             width: 2)),
                                   ),
                                 ),
@@ -242,7 +243,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                                     duration: Duration(milliseconds: 200),
                                     firstChild: Icon(
                                       Icons.visibility,
-                                      color: Color(0xff32e0c4),
+                                      color: libBlue,
                                       size: 28,
                                     ),
                                     secondChild: Icon(
@@ -259,7 +260,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                             ],
                           ),
                           CheckboxListTile(
-                            activeColor: Color(0xff32e0c4),
+                            activeColor: libBlue,
                             dense: true,
                             title: Text(
                               "Keep me signed in",
@@ -286,7 +287,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                   borderRadius: BorderRadius.circular(50),
                   child: MaterialButton(
                     animationDuration: Duration(seconds: 1),
-                    color: Color(0xff32e0c4),
+                    color: libBlue,
                     splashColor: Colors.white.withOpacity(.5),
                     onPressed: () {
                       setState(() {
@@ -336,7 +337,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                 child: Container(
                   width: double.infinity,
                   height: double.infinity,
-                  color: Color(0xff32e0c4),
+                  color: libBlue,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
