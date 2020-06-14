@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:projecttiga/Annc_Page.dart';
 import 'package:projecttiga/Home_Page.dart';
 import 'package:projecttiga/Login_Page.dart';
 import 'package:projecttiga/annc_detail.dart';
@@ -10,15 +11,13 @@ class RouteGenerator {
     bool authed = false;
 
     switch(settings.name){
+      case '/annc' :
+        return MaterialPageRoute(builder: (_) => AnncPage(userDetail: args,));
       case '/home' :
         return MaterialPageRoute(builder: (_) => HomePage(userDetail: args,));
       case '/login' :
         return MaterialPageRoute(builder: (_) => LoginPage());
       case '/anncDetail' :
-//        return PageRouteBuilder(
-//          transitionDuration: Duration(milliseconds: 500),
-//          pageBuilder: (_,__,___) => AnncDetail(tag: args)
-//        );
         return MaterialPageRoute(builder: (_) => AnncDetail(tag: args));
 
     }

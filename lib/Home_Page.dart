@@ -1,14 +1,9 @@
-import 'dart:convert';
-import 'dart:ui';
-
-import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
-import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:projecttiga/widgets/colorLib.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class HomePage extends StatefulWidget {
   List<dynamic> userDetail;
@@ -20,15 +15,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  ScrollController _scrollcontroller = new ScrollController();
-
   List<dynamic> userDetail;
 
   _HomePageState({this.userDetail});
-
-  List<dynamic> tag;
-  int _maxGet = 10;
-  bool _visible = false;
 
   String greeting() {
     var hour = DateTime.now().hour;
@@ -42,350 +31,391 @@ class _HomePageState extends State<HomePage> {
     return 'Good Evening';
   }
 
-  goDetail() {
-    print(tag[1]);
-    //Navigator.of(context).pushReplacementNamed('/anncDetail', arguments: tag);
-    Navigator.of(context).pushNamed('/anncDetail', arguments: tag);
-    //Navigator.of(context).popAndPushNamed('/anncDetail', arguments: tag);
-  }
-
-  Future<List> _getAnnc(bool stat) async {
-    final response = await http.post(
-        "http://192.168.43.79/ProjectTiga/getAnncData.php",
-        body: {"maxGet": _maxGet.toString()});
-
-    if (stat == null || stat == true) {
-      setState(() {
-        response.body;
-      });
-
-    }
-
-    return json.decode(response.body);
-  }
-
-  _getMore() {
-    setState(() {
-      _maxGet = _maxGet + 10;
-      _getAnnc(true);
-      print('get More $_maxGet');
-      Flushbar(
-        flushbarStyle: FlushbarStyle.FLOATING,
-        margin: EdgeInsets.all(8),
-        borderRadius: 8,
-        icon: Icon(
-          Icons.info_outline,
-          size: 28.0,
-          color: Colors.blue[300],
-        ),
-        animationDuration: Duration(milliseconds: 500),
-        barBlur: 1.0,
-        message:  "Loaded More Announcements",
-        duration:  Duration(seconds: 3),
-      )..show(context);
-    });
-  }
-
-  Future<void> _onRefresh() async {
-    print('refresh');
-    _getAnnc(true);
-    await Future.delayed(Duration(milliseconds: 2000));
-    // if failed,use refreshFailed()
-    Flushbar(
-      flushbarStyle: FlushbarStyle.FLOATING,
-      margin: EdgeInsets.all(8),
-      borderRadius: 8,
-      icon: Icon(
-        Icons.refresh,
-        size: 28.0,
-        color: Colors.blue[300],
-      ),
-      animationDuration: Duration(milliseconds: 500),
-      barBlur: 1.0,
-      message:  "Announcements Refreshed",
-      duration:  Duration(seconds: 3),
-    )..show(context);
-  }
-
-  @override
-  void initState() {
-    print('homePage');
-    _scrollcontroller.addListener(() {
-      if (_scrollcontroller.position.pixels ==
-          _scrollcontroller.position.maxScrollExtent) {
-        _getMore();
-        print(_scrollcontroller.position.pixels);
-        //AnimatedList.of(context).insertItem(index)
-      }
-    });
-    super.initState();
-    Future.delayed(Duration(milliseconds: 500), () {
-      setState(() {
-        _visible = true;
-      });
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarBrightness: Brightness.dark,
-      //statusBarIconBrightness: Brightness.dark,
-      systemNavigationBarIconBrightness: Brightness.light,
-    ));
-
-    final double _scrHeight = MediaQuery.of(context).size.height;
-    final double _scrWidth = MediaQuery.of(context).size.width;
-    double _sizeBar = MediaQuery.of(context).size.width * 0.65;
+    double _scrHeight = MediaQuery.of(context).size.height;
+    double _scrWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      extendBodyBehindAppBar: false,
+      backgroundColor: libColor1,
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
-        centerTitle: true,
-        //bottomOpacity: 0,
-        //brightness: Brightness.dark,
+        leading: Icon(Icons.settings, size: 25),
+        backgroundColor: Colors.transparent,
         elevation: 0,
-        backgroundColor: libBlue,
-        title: Text(
-          'Announcements',
-          style: GoogleFonts.montserrat(
-            color: Colors.white, //Color(0xff393e46),
-            fontWeight: FontWeight.w700,
-            fontSize: 25,
+        actions: <Widget>[
+          CircleAvatar(
+            radius: 15,
+            backgroundColor: Colors.white,
+            child: Icon(Icons.supervised_user_circle),
           ),
-        ),
-      ),
-      drawer: Drawer(
-        elevation: 10,
-        child: Container(
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    greeting(),
-                    style: GoogleFonts.montserrat(
-                      fontSize: 48,
-                      fontWeight: FontWeight.w800,
-                      height: .85,
-                      color: Color(0xff393e46),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    userDetail[1],
-                    style: GoogleFonts.lato(
-                        fontSize: 35,
-                        fontWeight: FontWeight.w500,
-                        color: Color(0xff393e46)),
-                  ),
-                  //Text(userDetail[2]),
-                  Text(
-                    userDetail[0],
-                    style: GoogleFonts.lato(color: Colors.black54),
-                  ),
-                  SizedBox(height: 20),
-                  Divider(
-                    color: libBlue,
-                  ),
-                  SizedBox(height: 40),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Icon(Icons.announcement, size: 30,color:  Color(0xff393e46).withOpacity(.5),),
-                      SizedBox(width: 10,),
-                      Text('Announcements', style: GoogleFonts.lato(fontSize: 16,color: Color(0xff393e46).withOpacity(.5))),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Icon(Icons.event_available, size: 30,color:  Color(0xff393e46),),
-                      SizedBox(width: 10,),
-                      Text('Register', style: GoogleFonts.lato(fontSize: 16,color: Color(0xff393e46))),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Icon(Icons.camera, size: 30,color:  Color(0xff393e46),),
-                      SizedBox(width: 10,),
-                      Text('Scan', style: GoogleFonts.lato(fontSize: 16,color: Color(0xff393e46))),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Icon(Icons.info, size: 30,color:  Color(0xff393e46),),
-                      SizedBox(width: 10,),
-                      Text('About', style: GoogleFonts.lato(fontSize: 16,color: Color(0xff393e46))),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Icon(Icons.settings, size: 30,color:  Color(0xff393e46),),
-                      SizedBox(width: 10,),
-                      Text('Settings', style: GoogleFonts.lato(fontSize: 16,color: Color(0xff393e46))),
-                    ],
-                  ),
-                  Expanded(
-                    child: Container(
-                      color: Colors.transparent,
-                    ),
-                  ),
-                  Center(
-                    child: FlatButton(
-                      onPressed: () {
-                        Navigator.of(context).pushReplacementNamed('/login');
-                      },
-                      child: Container(
-                        height: 50,
-                        width: 200,
-                        decoration: BoxDecoration(
-                          color: libBlue,
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: Center(
-                          child: Text(
-                            'LOGOUT',
-                            style: GoogleFonts.montserrat(color: Colors.white,fontWeight: FontWeight.w700,fontSize: 15, letterSpacing: 2),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 20,)
-                ],
-              ),
-            ),
-          ),
-        ),
+          SizedBox(width: 30),
+        ],
       ),
       body: Stack(
         children: <Widget>[
           SafeArea(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Expanded(
-                  child: FutureBuilder(
-                    future: _getAnnc(false),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasError) print(snapshot.error);
-                      return snapshot.hasData
-                          ? LiquidPullToRefresh(
-                              height: 100,
-                              color: libBlue,
-                              showChildOpacityTransition: false,
-                              animSpeedFactor: 5,
-                              springAnimationDurationInMilliseconds: 500,
-                              onRefresh: _onRefresh,
-                              child: new ListView.builder(
-                                  controller: _scrollcontroller,
-                                  itemCount: snapshot.data.length,
-                                  physics: BouncingScrollPhysics(),
-                                  itemBuilder: (context, index) {
-                                    return GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          tag = [
-                                            snapshot.data[index]["Header"],
-                                            snapshot.data[index]["subHeader"],
-                                            snapshot.data[index]["annc"],
-                                            snapshot.data[index]["stampid"]
-                                          ];
-                                        });
-                                        goDetail();
-                                      },
-                                      child: Hero(
-                                        tag: snapshot.data[index]['stampid'],
-                                        child: Material(
-                                          type: MaterialType.transparency,
-                                          child: Container(
-                                            margin: EdgeInsets.symmetric(
-                                                vertical: 11, horizontal: 30),
-                                            padding: EdgeInsets.all(10),
-                                            height: 120,
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                    color: Colors.grey[400]
-                                                        .withOpacity(.5),
-                                                    blurRadius: 5,
-                                                    spreadRadius: 2)
-                                              ],
-                                            ),
-                                            child: AnimatedOpacity(
-                                              duration:
-                                                  Duration(milliseconds: 500),
-                                              opacity: _visible ? 1 : 0,
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: <Widget>[
-                                                  Text(
-                                                    snapshot.data[index]
-                                                        ['Header'],
-                                                    style: GoogleFonts.lato(
-                                                      fontWeight:
-                                                          FontWeight.w900,
-                                                      fontSize: 20,
-                                                      color: Color(0xff393e46),
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    snapshot.data[index]
-                                                        ['subHeader'],
-                                                    style: GoogleFonts.lato(
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 15,
-                                                      color: Color(0xff393e46)
-                                                          .withOpacity(0.7),
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 10,
-                                                  ),
-                                                  Text(
-                                                    snapshot.data[index]
-                                                        ['stampid'],
-                                                    style: GoogleFonts.lato(
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      fontSize: 10,
-                                                      color: Color(0xff393e46),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  }),
-                            )
-                          : new Center(child: new CircularProgressIndicator());
-                    },
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 35),
+                  padding: EdgeInsets.all(10),
+                  height: 100,
+                  width: _scrWidth,
+                  //color: Colors.indigo[900].withOpacity(.2),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        greeting(),
+                        style: GoogleFonts.montserrat(
+                            fontSize: 30,
+                            fontWeight: FontWeight.w900,
+                            color: Colors.grey[200]),
+                      ),
+                      Text(
+                        userDetail[1],
+                        style: GoogleFonts.lato(
+                            fontSize: 30,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.grey[200]),
+                      )
+                    ],
                   ),
-                )
+                ),
+                SizedBox(height: 20),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20),
+                  padding: EdgeInsets.all(10),
+                  height: 120,
+                  width: _scrWidth,
+                  decoration: BoxDecoration(
+                      color: libColor5.withOpacity(.7),
+                      borderRadius: BorderRadius.circular(20)),
+                  child: Row(
+                    children: <Widget>[
+                      SizedBox(width: 15),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            userDetail[2],
+                            style: GoogleFonts.lato(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w900,
+                                color: Colors.grey[200]),
+                          ),
+                          Text(
+                            userDetail[0],
+                            style: GoogleFonts.lato(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.grey[200]),
+                          )
+                        ],
+                      ),
+                      Spacer(),
+                      QrImage(
+                        data: userDetail[0],
+                        version: QrVersions.auto,
+                        size: 100,
+                        gapless: true,
+                        foregroundColor: Colors.grey[200],
+                      )
+                    ],
+                  ),
+                ),
+                SizedBox(height: 20),
+                Row(
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 20),
+                      padding: EdgeInsets.all(15),
+                      height: 120,
+                      width: _scrWidth * .55,
+                      decoration: BoxDecoration(
+                          color: libColor5.withOpacity(.7),
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          Text(
+                            'Tingkat II',
+                            style: GoogleFonts.lato(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.grey[200]),
+                          ),
+                          Text(
+                            'Rekayasa Keamanan Siber Echo',
+                            softWrap: true,
+                            style: GoogleFonts.lato(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w900,
+                                color: Colors.grey[200]),
+                          ),
+                          Align(
+                            alignment: AlignmentDirectional.centerEnd,
+                            child: Text(
+                              'No. 19',
+                              style: GoogleFonts.lato(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey[200]),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        margin: EdgeInsets.only(right: 20),
+                        padding: EdgeInsets.all(15),
+                        height: 120,
+                        //width: _scrWidth*.55,
+                        decoration: BoxDecoration(
+                            color: libColor5.withOpacity(.7),
+                            borderRadius: BorderRadius.circular(20)),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              'ASTRA B',
+                              style: GoogleFonts.lato(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey[200]),
+                            ),
+                            Text(
+                              'B.506',
+                              softWrap: true,
+                              style: GoogleFonts.lato(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w900,
+                                  color: Colors.grey[200]),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 20),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20),
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  height: 120,
+                  width: _scrWidth,
+                  decoration: BoxDecoration(
+                      color: libColor5.withOpacity(.7),
+                      borderRadius: BorderRadius.circular(20)),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Spacer(),
+                      Container(
+                        width: 150,
+                        child: Center(
+                          child: Text(
+                            'Staff Bagian Dokumentasi dan Rumah Tangga',
+                            textAlign: TextAlign.center,
+                            softWrap: true,
+                            style: GoogleFonts.lato(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.grey[200]),
+                          ),
+                        ),
+                      ),
+                      Spacer(),
+                      Container(
+                        padding: EdgeInsets.all(10),
+                        height: double.infinity,
+                        width: 180,
+                        child: Center(
+                          child: Text(
+                            'Biro Umum',
+                            textAlign: TextAlign.center,
+                            softWrap: true,
+                            style: GoogleFonts.lato(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w900,
+                                color: Colors.grey[200]),
+                          ),
+                        ),
+                        decoration: BoxDecoration(
+                          color: libColor6.withOpacity(.5),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
+          ),
+          SlidingUpPanel(
+            color: Colors.grey[200],
+            defaultPanelState: PanelState.OPEN,
+            borderRadius: BorderRadius.only(
+                topRight: Radius.circular(40), topLeft: Radius.circular(40)),
+            maxHeight: _scrHeight * .75,
+            panelBuilder: (scrollController) {
+              return ClipRRect(
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(40),
+                    topLeft: Radius.circular(40)),
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(top: 10),
+                      height: 10,
+                      width: 100,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(.8),
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                    ),
+                    SizedBox(height: 23),
+                    Container(
+                      child: Text(
+                        "What Would You Do ?",
+                        style: GoogleFonts.montserrat(
+                          fontSize: 20,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 23),
+                    Expanded(
+                      child: GridView.count(
+                        padding: EdgeInsets.all(10),
+                        crossAxisSpacing: 20,
+                        mainAxisSpacing: 20,
+                        crossAxisCount: 2,
+                        //childAspectRatio: _scrWidth/_scrHeight,
+                        controller: scrollController,
+                        children: <Widget>[
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(30),
+                            child: GestureDetector(
+                              child: Container(
+                                color: libColor4,
+                                child: Stack(
+                                  children: <Widget>[
+                                    Positioned(
+                                      left: -20,
+                                      bottom: -30,
+                                      child: Icon(
+                                        Icons.record_voice_over,
+                                        color: Colors.red[900].withOpacity(.2),
+                                        size: 200,
+                                      ),
+                                    ),
+                                    Center(
+                                      child: Text(
+                                        'Announcements',
+                                        style: GoogleFonts.montserrat(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w700,
+                                            color: Colors.white),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              onTap: () {
+                                Navigator.of(context)
+                                    .pushNamed('/annc', arguments: userDetail);
+                              },
+                            ),
+                          ),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(30),
+                            child: Container(
+                              color: libColor2,
+                              child: Stack(
+                                children: <Widget>[
+                                  Positioned(
+                                    right: -50,
+                                    top: 5,
+                                    child: Icon(
+                                      Icons.event_available,
+                                      color: Colors.blue[900].withOpacity(.15),
+                                      size: 200,
+                                    ),
+                                  ),
+                                  Center(
+                                    child: Text(
+                                      'Register',
+                                      style: GoogleFonts.montserrat(
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.white),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(30),
+                            child: Container(
+                              color: libColor3,
+                              child: Stack(
+                                children: <Widget>[
+                                  Positioned(
+                                    right: -20,
+                                    bottom: -30,
+                                    child: Icon(
+                                      Icons.camera,
+                                      color: Colors.yellow[900].withOpacity(.2),
+                                      size: 200,
+                                    ),
+                                  ),
+                                  Center(
+                                    child: Text(
+                                      'Camera',
+                                      style: GoogleFonts.montserrat(
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.white),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(30),
+                            child: Container(
+                              color: Colors.grey[400],
+                              child: Stack(
+                                children: <Widget>[
+                                  Center(
+                                    child: Text(
+                                      'Coming Soon',
+                                      textAlign: TextAlign.center,
+                                      style: GoogleFonts.montserrat(
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.white),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
         ],
       ),

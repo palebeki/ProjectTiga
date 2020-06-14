@@ -107,8 +107,8 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     Color _color = Color(0xFFf2f2f2); // Colors.grey[200]
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
-      statusBarBrightness: Brightness.dark,
-      //statusBarIconBrightness: Brightness.dark,
+      statusBarBrightness: Brightness.light,
+      statusBarIconBrightness: Brightness.light,
       systemNavigationBarIconBrightness: Brightness.dark,
       systemNavigationBarColor: _color,
     ));
@@ -191,7 +191,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(50),
                                   borderSide: BorderSide(
-                                      color: libBlue, width: 2),
+                                      color: libColor1, width: 2),
                                 ),
                               ),
                             ),
@@ -226,7 +226,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                                     focusedBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(50),
                                         borderSide: BorderSide(
-                                            color: libBlue,
+                                            color: libColor1,
                                             width: 2)),
                                   ),
                                 ),
@@ -243,7 +243,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                                     duration: Duration(milliseconds: 200),
                                     firstChild: Icon(
                                       Icons.visibility,
-                                      color: libBlue,
+                                      color: libColor1,
                                       size: 28,
                                     ),
                                     secondChild: Icon(
@@ -260,7 +260,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                             ],
                           ),
                           CheckboxListTile(
-                            activeColor: libBlue,
+                            activeColor: libColor1,
                             dense: true,
                             title: Text(
                               "Keep me signed in",
@@ -287,7 +287,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                   borderRadius: BorderRadius.circular(50),
                   child: MaterialButton(
                     animationDuration: Duration(seconds: 1),
-                    color: libBlue,
+                    color: libColor1,
                     splashColor: Colors.white.withOpacity(.5),
                     onPressed: () {
                       setState(() {
@@ -337,7 +337,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                 child: Container(
                   width: double.infinity,
                   height: double.infinity,
-                  color: libBlue,
+                  color: libColor1,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
